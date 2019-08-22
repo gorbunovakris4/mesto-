@@ -1,0 +1,7 @@
+.photo-popup__close {
+    position: relative;
+    left: 30px;
+    bottom: 4px;
+    width: 26px;
+    cursor: pointer;
+}
