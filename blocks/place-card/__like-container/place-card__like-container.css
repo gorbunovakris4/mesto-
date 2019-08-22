@@ -1,0 +1,7 @@
+.place-card__like-container {
+    width: 20px;
+    height: 34px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
