@@ -1,0 +1,25 @@
+{
+  "name": "mesto-",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "dependencies": {},
+  "devDependencies": {
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  },
+  "scripts": {
+        "build": "webpack --mode production",
+        "dev": "webpack-dev-server --mode development --open"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gorbunovakris4/mesto-.git"
+  },
+  "author": "Gorbunova Kristina",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gorbunovakris4/mesto-/issues"
+  },
+  "homepage": "https://github.com/gorbunovakris4/mesto-#readme"
+}
