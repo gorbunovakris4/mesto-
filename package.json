@@ -10,7 +10,7 @@
   },
   "scripts": {
         "build": "webpack --mode production",
-        "dev": "webpack-dev-server --mode development --open"
+        "dev": "webpack-dev-server --mode development --open --watch"
 },
   "repository": {
     "type": "git",
