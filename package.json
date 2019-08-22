@@ -5,13 +5,15 @@
   "main": "script.js",
   "dependencies": {},
   "devDependencies": {
+    "path": "^0.12.7",
     "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.7"
+    "webpack-cli": "^3.3.7",
+    "webpack-md5-hash": "0.0.6"
   },
   "scripts": {
-        "build": "webpack --mode production",
-        "dev": "webpack-dev-server --mode development --open --watch"
-},
+    "build": "webpack --mode production",
+    "dev": "webpack-dev-server --mode development --open --watch"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gorbunovakris4/mesto-.git"
