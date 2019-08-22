@@ -8,6 +8,7 @@
     "path": "^0.12.7",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0",
     "webpack-md5-hash": "0.0.6"
   },
   "scripts": {
