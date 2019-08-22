@@ -1,6 +1,0 @@
-@import url(./__content/photo-popup__content.css);
-@import url(./__close/photo-popup__close.css);
-
-.popup_is-opened.photo-popup {
-    flex-direction: column;
-}
