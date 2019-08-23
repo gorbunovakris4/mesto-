@@ -2,6 +2,8 @@ const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackMd5Hash = require('webpack-md5-hash');
+const FileLoader = require('file-loader');
+const ImageWebpackLoader = require('image-webpack-loader');
 
 module.exports = {
     entry: { main: './src/index.js' },
@@ -18,7 +20,7 @@ module.exports = {
             {
                 test: /\.(png|jpg|gif|ico|svg)$/,
                 use: [
-                        'file-loader?name=../images/[name].[ext]',
+                        'file-loader?name=./images/[name].[ext]',
                         {
                                 loader: 'image-webpack-loader'
                         },

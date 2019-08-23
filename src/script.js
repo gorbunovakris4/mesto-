@@ -1,3 +1,6 @@
+import Popup from './Popup.js';
+import CardList from './Cardlist.js';
+
 const newForm = document.forms.new;
 const addButton = document.querySelector('.popup-for-photos__button');
 const profileForm = document.forms.profile;
@@ -9,26 +12,214 @@ const updateButton = document.querySelector('.popup-for-avatar__button');
 const userAvatar = document.querySelector('.user-info__photo');
 const root = document.querySelector('.root');
 
-const popupForPhotos = new Popup(document.querySelector('.popup-for-photos'), document.querySelector('.user-info__button'), document.querySelector('.popup-for-photos__close'));
-const popupForProfile = new Popup(document.querySelector('.popup-for-profile'), document.querySelector('.user-info__edit-button'), document.querySelector('.popup-for-profile__close'));
-const popupForAvatar = new Popup(document.querySelector('.popup-for-avatar'), document.querySelector('.user-info__photo'), document.querySelector('.popup-for-avatar__close'));
+export const popupForPhotos = new Popup(document.querySelector('.popup-for-photos'), document.querySelector('.user-info__button'), document.querySelector('.popup-for-photos__close'));
+export const popupForProfile = new Popup(document.querySelector('.popup-for-profile'), document.querySelector('.user-info__edit-button'), document.querySelector('.popup-for-profile__close'));
+export const popupForAvatar = new Popup(document.querySelector('.popup-for-avatar'), document.querySelector('.user-info__photo'), document.querySelector('.popup-for-avatar__close'));
 
-const cardList = new CardList(document.querySelector('.places-list'));
+export const cardList = new CardList(document.querySelector('.places-list'));
 
 const SERVER_BASE_URL = 'http://95.216.175.5/cohort1';
 const TOCKEN = '37465f82-6757-49ca-8f0e-13e09273b52e';
 const CONTENT_TYPE = 'application/json';
-const MY_ID = '26751cb353f46b06f586db73';
+export const MY_ID = '26751cb353f46b06f586db73';
 
-const BLOCKED_USERS = ["a8f785f65a89fd5aa5faf82c "];
-
-const api = new Api({
-    baseUrl: SERVER_BASE_URL,
-    headers: {
-      authorization: TOCKEN,
-      'Content-Type': CONTENT_TYPE
+class Api {
+    constructor(options) {
+        this.baseUrl = options.baseUrl;
+        this.headers = options.headers;
     }
-  });
+
+    getUserInfo() {
+        return fetch(this.baseUrl + '/users/me', {
+            headers: this.headers
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+            })
+            .then((result) => {
+                if (result) {
+                    rewriteProfile(result.name, result.about);
+                    rewriteAvatar(result.avatar);
+                } else {
+                    console.log('Произошла ошибка');
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    updateUserInfo(name, about) {
+        return fetch(this.baseUrl + '/users/me', {
+            method: 'PATCH',
+            headers: this.headers,
+            body: JSON.stringify({ name, about })
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+            })
+            .then((result) => {
+                if (result) {
+                    rewriteProfile(result.name, result.about);
+                } else {
+                    console.log('Произошла ошибка');
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => {
+                popupForProfile.popupElement.classList.remove('popup_is-opened');
+                saveButton.textContent = "Сохранить";
+            });
+    }
+
+    updateUserAvatar(avatar) {
+        return fetch(this.baseUrl + '/users/me/avatar', {
+            method: 'PATCH',
+            headers: this.headers,
+            body: JSON.stringify({ avatar })
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+            })
+            .then((result) => {
+                if (result) {
+                    rewriteAvatar(result.avatar);
+                } else {
+                    console.log('Произошла ошибка');
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => {
+                popupForAvatar.popupElement.classList.remove('popup_is-opened');
+                avatarForm.reset();
+                updateButton.setAttribute('disabled', true);
+                updateButton.classList.remove('popup__button_is-active');
+                updateButton.textContent = "Сохранить";
+            });
+    }
+
+    getInitialCards() {
+        return fetch(this.baseUrl + '/cards', {
+            headers: this.headers
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+            })
+            .then((result) => {
+                if (result) {
+                    cardList.render(result);
+                    // result.forEach(card => {
+                    //     console.log(card.owner);
+                    // });
+                } else {
+                    console.log('Произошла ошибка');
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    addCard(name, link) {
+        return fetch(this.baseUrl + '/cards', {
+            method: 'POST',
+            headers: this.headers,
+            body: JSON.stringify({ name, link })
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+            })
+            .then((result) => {
+                if (result)
+                    cardList.addCard(result.name, result.link, result.likes, result.owner._id, result._id);
+                else {
+                    console.log('Произошла ошибка');
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => {
+                popupForPhotos.popupElement.classList.remove('popup_is-opened');
+                newForm.reset();
+                addButton.setAttribute('disabled', true);
+                addButton.classList.remove('popup__button_is-active');
+                addButton.style.fontSize = '36px';
+                addButton.textContent = "+";
+            });
+    }
+
+    deleteCard(card) {
+        return fetch(this.baseUrl + '/cards/' + card.id, {
+            method: 'DELETE',
+            headers: this.headers
+        })
+        .then(res => {
+            if (res.ok)
+                card.remove();
+            else
+                console.log('Произошла ошибка');
+
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+    }
+
+    likeCard(card) {
+        return fetch(this.baseUrl + '/cards/like/' + card.id, {
+            method: 'PUT',
+            headers: this.headers
+        })
+        .then(res => {
+            if (res.ok)
+                return res.json();
+            else
+                console.log('Произошла ошибка');
+
+        })
+        .then(result => {
+            card.likes = result.likes;
+            card.renderLikeCounter(result.likes);
+            card.card.querySelector('.place-card__like-icon').classList.add('place-card__like-icon_liked');
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+    }
+
+    dislikeCard(card) {
+        return fetch(this.baseUrl + '/cards/like/' + card.id, {
+            method: 'DELETE',
+            headers: this.headers
+        })
+        .then(res => {
+            if (res.ok)
+                return res.json();
+            else
+                console.log('Произошла ошибка');
+
+        })
+        .then(result => {
+            card.likes = result.likes;
+            card.renderLikeCounter(result.likes);
+            card.card.querySelector('.place-card__like-icon').classList.remove('place-card__like-icon_liked');
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+    }
+
+}
 
 function addCardFromForm(event) {
     event.preventDefault();
@@ -39,14 +230,14 @@ function addCardFromForm(event) {
     api.addCard(name.value, link.value);
 }
 
-function rewriteProfile(name, job) {
+export function rewriteProfile(name, job) {
     userName.textContent = name;
     userJob.textContent = job;
     profileForm.elements.userName.value = name;
     profileForm.elements.userJob.value = job;
 }
 
-function rewriteAvatar(newUrl) {
+export function rewriteAvatar(newUrl) {
     userAvatar.style.backgroundImage = "url(" + newUrl + ")";
 }
 
@@ -129,7 +320,7 @@ function inputHandlerForAvatar(event) {
     }
 }
 
-function showPicture(photo) {
+export function showPicture(photo) {
     const closingIcon = document.createElement('img');
     const picture = document.createElement('img');
     let photoLink = photo.style.backgroundImage;
@@ -164,7 +355,16 @@ profileForm.addEventListener('submit', changeProfile);
 avatarForm.addEventListener('input', inputHandlerForAvatar);
 avatarForm.addEventListener('submit', changeAvatar);
 
-api.getUsers();
+
+
+export const api = new Api({
+    baseUrl: SERVER_BASE_URL,
+    headers: {
+      authorization: TOCKEN,
+      'Content-Type': CONTENT_TYPE
+    }
+  });
+
 api.getUserInfo();
 api.getInitialCards();
 addButton.setAttribute('disabled', 'true');

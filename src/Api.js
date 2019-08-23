@@ -1,33 +1,9 @@
-class Api {
+import {rewriteAvatar, rewriteProfile, cardList} from './script.js';
+
+export default class Api {
     constructor(options) {
         this.baseUrl = options.baseUrl;
         this.headers = options.headers;
-    }
-
-    getUsers() {
-        return fetch(this.baseUrl + '/users', {
-            headers: this.headers
-        })
-            .then(res => {
-                if (res.ok)
-                    return res.json();
-            })
-            .then((result) => {
-                if (result) {
-                    console.log(result);
-                    console.log("Students with default profile: " + result.reduce((prev, user) => {
-                        return prev + Number((user.name === "Jacques Cousteau") && (user.about === "Sailor, researcher"));
-                    }, -1));
-                    console.log("Students with default avatar: " + result.reduce((prev, user) => {
-                        return prev + Number(user.avatar === "https://pictures.s3.yandex.net/frontend-developer/common/ava.jpg");
-                    }, -1));
-                } else {
-                    console.log('Произошла ошибка');
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
     }
 
     getUserInfo() {
@@ -117,11 +93,9 @@ class Api {
             .then((result) => {
                 if (result) {
                     cardList.render(result);
-                    console.log(result);
-                    console.log(result.reduce((prev, card) => {
-                        prev.push(card.owner);
-                        return prev;
-                    }, []));
+                    // result.forEach(card => {
+                    //     console.log(card.owner);
+                    // });
                 } else {
                     console.log('Произошла ошибка');
                 }

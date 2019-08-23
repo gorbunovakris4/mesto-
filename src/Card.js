@@ -1,4 +1,6 @@
-class Card {
+import {api, showPicture, MY_ID} from './script.js';
+
+export default class Card {
     constructor(name, link, likes, ownerId, cardId) {
         this.likes = likes;
         this.card = this.create(name, link, likes, ownerId);
@@ -84,7 +86,7 @@ class Card {
        this.card.querySelector('.place-card__delete-icon').removeEventListener('click', this.delete.bind(this));
        this.card.querySelector('.place-card__image').removeEventListener('click', this.showPicture);
 
-        cardList.container.removeChild(this.card);
+        this.card.parentElement.removeChild(this.card);
     }
 
     showPicture(event) {
