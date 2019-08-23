@@ -30,7 +30,7 @@
   "scripts": {
     "build": "rimraf dist && webpack --mode production",
     "dev": "webpack-dev-server --mode development --open --watch",
-    "deploy": "gh-pages -d dist" 
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
