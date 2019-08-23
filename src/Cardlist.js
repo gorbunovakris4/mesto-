@@ -1,4 +1,6 @@
-class CardList {
+import Card from './Card.js';
+
+export default class CardList {
     constructor(container) {
         this.container = container;
     }
@@ -10,10 +12,6 @@ class CardList {
 
     render(cards) {
         cards.forEach(card => {
-            if (BLOCKED_USERS.some((userId) => {
-                return card.owner._id === userId;
-            }))
-                return;
             this.addCard(card.name, card.link, card.likes, card.owner._id, card._id);
         });
     }
