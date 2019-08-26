@@ -18,7 +18,7 @@ export const popupForAvatar = new Popup(document.querySelector('.popup-for-avata
 
 export const cardList = new CardList(document.querySelector('.places-list'));
 
-const SERVER_BASE_URL = 'https://praktikum.tk/cohort1';
+const SERVER_BASE_URL = 'http://praktikum.tk/cohort1';
 const TOCKEN = '37465f82-6757-49ca-8f0e-13e09273b52e';
 const CONTENT_TYPE = 'application/json';
 export const MY_ID = '26751cb353f46b06f586db73';
